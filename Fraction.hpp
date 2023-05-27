@@ -30,7 +30,7 @@ struct A<N, M, 0> {
 
 // -----------------------------------------
 //
-//   Fractlaration
+//   declaration
 //
 // -----------------------------------------
 
@@ -61,6 +61,19 @@ struct FractionDiv;
 template<typename _Fract1, int64 scalar>
 struct FractionDivScalar;
 
+template<typename _Fract1, typename _Fract2>
+struct Equal;
+template<typename _Fract1, typename _Fract2>
+struct Not_Equal;
+template<typename _Fract1, typename _Fract2>
+struct Less;
+template<typename _Fract1, typename _Fract2>
+struct Less_Equal;
+template<typename _Fract1, typename _Fract2>
+struct Greater;
+template<typename _Fract1, typename _Fract2>
+struct Greater_Equal;
+
 // -----------------------------------------
 //
 //   Definition
@@ -70,8 +83,8 @@ struct FractionDivScalar;
 // Basic struct representing a fraction
 template<int64 _Num, int64 _DeNum>
 struct Fraction {
-    static constexpr int64 num      = _Num / GCD<_Num, _DeNum>::value;
-    static constexpr int64 denum    = _DeNum / GCD<_Num, _DeNum>::value;
+    static constexpr int64 num      = _Num / GCD<_Num, _DeNum>::value * (_DeNum < 0 ? -1: 1);
+    static constexpr int64 denum    = _DeNum / GCD<_Num, _DeNum>::value * (_DeNum < 0 ? -1 : 1);
     static constexpr double value   = static_cast<double>(_Num) / _DeNum;
 };
 
@@ -199,6 +212,34 @@ struct Power {
     static constexpr int64  denum   = FractionMul<Power<_Fract, n / 2>, Power<_Fract, n - n / 2> >::denum;
     static constexpr double value   = static_cast<double>(num) / denum;
 };
+
+template<typename _Fract1, typename _Fract2>
+struct Equal {
+    static constexpr bool value = _Fract1::denum == _Fract2::denum && _Fract1::num == _Fract2::num;
+};
+
+template<typename _Fract1, typename _Fract2>
+struct Not_Equal {
+    static constexpr bool value = _Fract1::denum != _Fract2::denum || _Fract1::num != _Fract2::num;
+};
+
+template<typename _Fract1, typename _Fract2>
+struct Less {
+    static constexpr bool value = _Fract1::num * _Fract2::denum < _Fract2::num* _Fract1::denum;
+};
+template<typename _Fract1, typename _Fract2>
+struct Less_Equal {
+    static constexpr bool value = _Fract1::num * _Fract2::denum <= _Fract2::num* _Fract1::denum;
+};
+template<typename _Fract1, typename _Fract2>
+struct Greater {
+    static constexpr bool value = _Fract1::num * _Fract2::denum > _Fract2::num* _Fract1::denum;
+};
+template<typename _Fract1, typename _Fract2>
+struct Greater_Equal {
+    static constexpr bool value = _Fract1::num * _Fract2::denum >= _Fract2::num* _Fract1::denum;
+};
+
 
 // Example
 
